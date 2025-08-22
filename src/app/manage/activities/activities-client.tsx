@@ -239,7 +239,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
               </div>
             </CardHeader>
             <CardContent className="py-6">
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+              <div className="space-y-3 overflow-y-auto">
                 {filteredActivities.length === 0 ? (
                   <p className="text-center py-6 px-4" style={{ color: '#282C44' }}>
                     {selectedTypeFilter === 'all'

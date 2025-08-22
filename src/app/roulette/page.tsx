@@ -24,15 +24,6 @@ export default async function RoulettePage() {
   return (
     <div className="min-h-screen p-4" style={{ backgroundColor: '#d4c4a8' }}>
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4" style={{ color: '#282C44' }}>
-            🎯 YourTimeRoulette
-          </h1>
-          <p className="text-lg" style={{ color: '#282C44' }}>
-            Laat het toeval beslissen wat je volgende activiteit wordt!
-          </p>
-        </div>
-
         <RouletteClient activities={activities} />
       </div>
     </div>
