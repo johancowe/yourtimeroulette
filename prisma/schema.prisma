@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ActivityType {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String?
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  activities  Activity[]
+
+  @@map("activity_types")
+}
+
+model Activity {
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  weight       Int           @default(50) // 0-100, 50 is average
+  isActive     Boolean       @default(true) @map("is_active")
+  typeId       String        @map("type_id")
+  type         ActivityType  @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  activityLogs ActivityLog[]
+
+  @@map("activities")
+}
+
+model ActivityLog {
+  id               String   @id @default(cuid())
+  activityId       String   @map("activity_id")
+  activity         Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  selectedAt       DateTime @default(now()) @map("selected_at")
+  timeSpentMinutes Int?     @map("time_spent_minutes")
+  notes            String?
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("activity_logs")
+}
