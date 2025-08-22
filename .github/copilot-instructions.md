@@ -160,23 +160,23 @@ model ActivityLog {
 - **Achtergrond (Background)**: `#d4c4a8` (donker beige)
 - **Tile achtergrond (Card Background)**: `#e8d8b9` (lichter beige)
 - **Item achtergrond (Item Background)**: `#f2ecd9` (zeer lichte beige) - voor individuele items binnen cards
-- **Teksten (Text)**: `#3d4a6b` (zachte donkerblauw)
-- **Knop achtergrond (Button Background)**: `#3d4a6b` (zachte donkerblauw)
+- **Teksten (Text)**: `#282C44` (Donker Blauw)
+- **Knop achtergrond (Button Background)**: `#282C44` (Donker Blauw)
 - **Knoptekst (Button Text)**: `#d4c4a8` (donker beige)
 
 ### Typography
 - **Font Family**: Inter, system-ui, sans-serif
-- **Main Titles**: `#3d4a6b` (zachte donkerblauw)
-- **Subtitles/Descriptions**: `#3d4a6b` (zachte donkerblauw)
+- **Main Titles**: `#282C44` (Donker Blauw)
+- **Subtitles/Descriptions**: `#282C44` (Donker Blauw)
 - **Header Descriptions**: `#d4c4a8` (donker beige) when on dark backgrounds
 
 ### Component Styling
-- **Cards**: Light beige background (`#e8d8b9`) with soft dark blue borders (`#3d4a6b`)
-- **Card Headers**: Soft dark blue background (`#3d4a6b`) with light beige text (`#e8d8b9`)
+- **Cards**: Light beige background (`#e8d8b9`) with Donker Blauw borders (`#282C44`)
+- **Card Headers**: Donker Blauw background (`#282C44`) with light beige text (`#e8d8b9`)
 - **Individual Items**: Very light beige background (`#f2ecd9`) for list items within cards
-- **Buttons**: Soft dark blue background (`#3d4a6b`) with dark beige text (`#d4c4a8`)
-- **Input Fields & Form Elements**: Very light beige background (`#f2ecd9`) with soft dark blue borders (`#3d4a6b`)
-- **Dropdown Fields**: Very light beige background (`#f2ecd9`) with soft dark blue borders (`#3d4a6b`)
+- **Buttons**: Donker Blauw background (`#282C44`) with dark beige text (`#d4c4a8`)
+- **Input Fields & Form Elements**: Very light beige background (`#f2ecd9`) with Donker Blauw borders (`#282C44`)
+- **Dropdown Fields**: Very light beige background (`#f2ecd9`) with Donker Blauw borders (`#282C44`)
 - **Page Backgrounds**: Dark beige (`#d4c4a8`)
 
 ### Color Hierarchy

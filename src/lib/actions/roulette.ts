@@ -1,3 +1,5 @@
+'use server'
+
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import type { Activity, ActivityType } from '@prisma/client'
@@ -8,7 +10,6 @@ type ActivityWithType = Activity & {
 
 // Roulette Actions
 export async function selectRandomActivity() {
-  'use server'
 
   try {
     // Get all active activities with their weights
@@ -53,9 +54,36 @@ export async function selectRandomActivity() {
   }
 }
 
-export async function logActivityTime(formData: FormData) {
-  'use server'
+export async function logActivity(activityId: string) {
+  try {
+    const activityLog = await prisma.activityLog.create({
+      data: {
+        activityId: activityId
+      },
+      include: {
+        activity: {
+          include: {
+            type: true
+          }
+        }
+      }
+    })
 
+    revalidatePath('/roulette')
+    return {
+      id: activityLog.id,
+      activity: activityLog.activity,
+      selectedAt: activityLog.selectedAt,
+      timeSpentMinutes: activityLog.timeSpentMinutes,
+      notes: activityLog.notes
+    }
+  } catch (error) {
+    console.error('Error logging activity:', error)
+    throw new Error('Failed to log activity')
+  }
+}
+
+export async function logActivityTime(formData: FormData) {
   const logId = formData.get('logId') as string
   const timeSpentMinutes = parseInt(formData.get('timeSpentMinutes') as string)
   const notes = formData.get('notes') as string

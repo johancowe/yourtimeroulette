@@ -96,12 +96,12 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-4xl font-bold mb-4 px-2" style={{ color: '#3d4a6b' }}>
+            <h1 className="text-4xl font-bold mb-4 px-2" style={{ color: '#282C44' }}>
               Activiteiten Beheer
             </h1>
           </div>
           <Link href="/">
-            <Button variant="outline" className="border-2 font-semibold py-3 px-6 hover:shadow-md transition-all duration-200" style={{ backgroundColor: '#3d4a6b', color: '#d4c4a8', borderColor: '#3d4a6b' }}>
+            <Button variant="outline" className="border-2 font-semibold py-3 px-6 hover:shadow-md transition-all duration-200" style={{ backgroundColor: '#282C44', color: '#d4c4a8', borderColor: '#282C44' }}>
               ← Terug naar Home
             </Button>
           </Link>
@@ -109,8 +109,8 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
 
         <div className="grid lg:grid-cols-2 gap-8 items-start">
           {/* Create New Activity Form */}
-          <Card className="shadow-lg border-2 overflow-hidden" style={{ backgroundColor: '#e8d8b9', borderColor: '#3d4a6b' }}>
-            <CardHeader className="py-6 m-0 p-6" style={{ backgroundColor: '#3d4a6b', color: '#e8d8b9', paddingTop: '1.65rem', paddingBottom: '1.65rem' }}>
+          <Card className="shadow-lg border-2 overflow-hidden" style={{ backgroundColor: '#e8d8b9', borderColor: '#282C44' }}>
+            <CardHeader className="py-6 m-0 p-6" style={{ backgroundColor: '#282C44', color: '#e8d8b9', paddingTop: '1.65rem', paddingBottom: '1.65rem' }}>
               <CardTitle className="px-2 text-xl flex items-center" style={{ color: '#e8d8b9' }}>
                 <Plus className="h-6 w-6 mr-3" />
                 Nieuwe Activiteit Toevoegen
@@ -126,11 +126,11 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
             <CardContent className="py-3">
               {initialActivityTypes.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="mb-6 px-4 py-2" style={{ color: '#3d4a6b' }}>
+                  <p className="mb-6 px-4 py-2" style={{ color: '#282C44' }}>
                     Je moet eerst een activiteit categorie aanmaken voordat je activiteiten kunt toevoegen.
                   </p>
                   <Link href="/manage/types">
-                    <Button className="font-semibold py-3 px-6 border-2 hover:shadow-md transition-all duration-200" style={{ backgroundColor: '#3d4a6b', color: '#d4c4a8', borderColor: '#3d4a6b' }}>
+                    <Button className="font-semibold py-3 px-6 border-2 hover:shadow-md transition-all duration-200" style={{ backgroundColor: '#282C44', color: '#d4c4a8', borderColor: '#282C44' }}>
                       Ga naar Categorieën Beheer
                     </Button>
                   </Link>
@@ -138,30 +138,30 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
               ) : (
                 <form action={handleCreateActivity} className="space-y-3">
                   <div>
-                    <Label htmlFor="name" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>Naam *</Label>
+                    <Label htmlFor="name" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>Naam *</Label>
                     <Input
                       id="name"
                       name="name"
                       placeholder="bijv. De Zee lezen"
                       required
                       className="border-2 py-3 px-4 mt-1"
-                      style={{ borderColor: '#3d4a6b', backgroundColor: '#f2ecd9' }}
+                      style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="description" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>Beschrijving</Label>
+                    <Label htmlFor="description" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>Beschrijving</Label>
                     <Textarea
                       id="description"
                       name="description"
                       placeholder="Optionele beschrijving..."
                       className="resize-none border-2 py-3 px-4 mt-1"
-                      style={{ borderColor: '#3d4a6b', backgroundColor: '#f2ecd9' }}
+                      style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="activityType" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>Activiteit Categorie *</Label>
+                    <Label htmlFor="activityType" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>Activiteit Categorie *</Label>
                     <Select name="activityType" required>
-                      <SelectTrigger className="border-2 py-3 px-4 mt-1" style={{ borderColor: '#3d4a6b', backgroundColor: '#f2ecd9' }}>
+                      <SelectTrigger className="border-2 py-3 px-4 mt-1" style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}>
                         <SelectValue placeholder="Selecteer een categorie" />
                       </SelectTrigger>
                       <SelectContent>
@@ -174,7 +174,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="weight" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>Gewicht (0-100) *</Label>
+                    <Label htmlFor="weight" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>Gewicht (0-100) *</Label>
                     <Input
                       id="weight"
                       name="weight"
@@ -184,9 +184,9 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                       defaultValue="50"
                       required
                       className="border-2 py-3 px-4 mt-1"
-                      style={{ borderColor: '#3d4a6b', backgroundColor: '#f2ecd9' }}
+                      style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}
                     />
-                    <p className="text-sm mt-1 px-3 py-1" style={{ color: '#3d4a6b' }}>
+                    <p className="text-sm mt-1 px-3 py-1" style={{ color: '#282C44' }}>
                       50 = gemiddeld, hoger = meer kans om gekozen te worden
                     </p>
                   </div>
@@ -198,9 +198,9 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                       defaultChecked
                       className="rounded w-4 h-4"
                     />
-                    <Label htmlFor="isActive" className="text-base font-medium" style={{ color: '#3d4a6b' }}>Actief</Label>
+                    <Label htmlFor="isActive" className="text-base font-medium" style={{ color: '#282C44' }}>Actief</Label>
                   </div>
-                  <Button type="submit" className="w-full font-semibold py-4 px-6 border-2 hover:shadow-md transition-all duration-200" style={{ backgroundColor: '#3d4a6b', color: '#d4c4a8', borderColor: '#3d4a6b' }}>
+                  <Button type="submit" className="w-full font-semibold py-4 px-6 border-2 hover:shadow-md transition-all duration-200" style={{ backgroundColor: '#282C44', color: '#d4c4a8', borderColor: '#282C44' }}>
                     Activiteit Toevoegen
                   </Button>
                 </form>
@@ -209,8 +209,8 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
           </Card>
 
           {/* Existing Activities List */}
-          <Card className="shadow-lg border-2 overflow-hidden" style={{ backgroundColor: '#e8d8b9', borderColor: '#3d4a6b' }}>
-            <CardHeader className="py-6 m-0 p-6" style={{ backgroundColor: '#3d4a6b', color: '#e8d8b9', paddingTop: '1.65rem', paddingBottom: '1.65rem' }}>
+          <Card className="shadow-lg border-2 overflow-hidden" style={{ backgroundColor: '#e8d8b9', borderColor: '#282C44' }}>
+            <CardHeader className="py-6 m-0 p-6" style={{ backgroundColor: '#282C44', color: '#e8d8b9', paddingTop: '1.65rem', paddingBottom: '1.65rem' }}>
               <CardTitle className="px-2 text-xl flex items-center justify-between" style={{ color: '#e8d8b9' }}>
                 <span>Bestaande Activiteiten</span>
                 <span className="text-sm font-normal">
@@ -224,7 +224,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                   Filter op Categorie
                 </Label>
                 <Select value={selectedTypeFilter} onValueChange={setSelectedTypeFilter}>
-                  <SelectTrigger className="border-2 py-3 px-4 flex-1" style={{ backgroundColor: '#f2ecd9', borderColor: '#3d4a6b', color: '#3d4a6b' }}>
+                  <SelectTrigger className="border-2 py-3 px-4 flex-1" style={{ backgroundColor: '#f2ecd9', borderColor: '#282C44', color: '#282C44' }}>
                     <SelectValue placeholder="Filter op categorie" />
                   </SelectTrigger>
                   <SelectContent>
@@ -241,7 +241,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
             <CardContent className="py-6">
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {filteredActivities.length === 0 ? (
-                  <p className="text-center py-6 px-4" style={{ color: '#3d4a6b' }}>
+                  <p className="text-center py-6 px-4" style={{ color: '#282C44' }}>
                     {selectedTypeFilter === 'all'
                       ? 'Nog geen activiteiten toegevoegd'
                       : 'Geen activiteiten gevonden voor geselecteerd type'
@@ -252,24 +252,24 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                     <div
                       key={activity.id}
                       className="border-2 rounded-lg p-3 shadow-md hover:shadow-lg transition-all duration-300"
-                      style={{ backgroundColor: '#f2ecd9', borderColor: '#3d4a6b' }}
+                      style={{ backgroundColor: '#f2ecd9', borderColor: '#282C44' }}
                     >
                       <div className="flex justify-between items-center">
                         <div className="flex-1">
                           <div className="flex items-baseline gap-3 mb-1">
                             {/* Scale icon with number below */}
                             <div className="flex flex-col items-center">
-                              <Scale className="w-7 h-7" style={{ color: '#3d4a6b' }} />
-                              <span className="text-xs font-bold" style={{ color: '#3d4a6b' }}>
+                              <Scale className="w-7 h-7" style={{ color: '#282C44' }} />
+                              <span className="text-xs font-bold" style={{ color: '#282C44' }}>
                                 {activity.weight}
                               </span>
                             </div>
-                            <h3 className="font-bold text-base px-1" style={{ color: '#3d4a6b' }}>
+                            <h3 className="font-bold text-base px-1" style={{ color: '#282C44' }}>
                               {activity.name}
                             </h3>
                           </div>
                           {activity.description && (
-                            <p className="text-sm mt-1 px-2" style={{ color: '#3d4a6b' }}>
+                            <p className="text-sm mt-1 px-2" style={{ color: '#282C44' }}>
                               {activity.description}
                             </p>
                           )}
@@ -299,7 +299,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                             size="sm"
                             variant="outline"
                             className="border-2 font-medium py-2 px-3 hover:shadow-md transition-all duration-200"
-                            style={{ backgroundColor: '#6ECFF6', borderColor: '#3d4a6b', color: '#3d4a6b' }}
+                            style={{ backgroundColor: '#6ECFF6', borderColor: '#6ECFF6', color: '#282C44' }}
                             onClick={() => handleEditActivity(activity)}
                             disabled={isPending}
                           >
@@ -329,10 +329,10 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
 
         {/* Edit Activity Modal */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="border-2 max-w-lg" style={{ backgroundColor: '#e8d8b9', borderColor: '#3d4a6b' }}>
+          <DialogContent className="border-2 max-w-lg" style={{ backgroundColor: '#e8d8b9', borderColor: '#282C44' }}>
             <DialogHeader>
-              <DialogTitle style={{ color: '#3d4a6b' }}>Activiteit Bewerken</DialogTitle>
-              <DialogDescription style={{ color: '#3d4a6b' }}>
+              <DialogTitle style={{ color: '#282C44' }}>Activiteit Bewerken</DialogTitle>
+              <DialogDescription style={{ color: '#282C44' }}>
                 Wijzig de details van deze activiteit.
               </DialogDescription>
             </DialogHeader>
@@ -340,7 +340,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
               <form action={handleUpdateActivity} className="space-y-3">
                 <input type="hidden" name="id" value={editingActivity.id} />
                 <div>
-                  <Label htmlFor="edit-name" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>Naam *</Label>
+                  <Label htmlFor="edit-name" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>Naam *</Label>
                   <Input
                     id="edit-name"
                     name="name"
@@ -348,11 +348,11 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                     required
                     disabled={isPending}
                     className="border-2 py-3 px-4 mt-1"
-                    style={{ borderColor: '#3d4a6b', backgroundColor: '#f2ecd9' }}
+                    style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="edit-description" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>Beschrijving</Label>
+                  <Label htmlFor="edit-description" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>Beschrijving</Label>
                   <Textarea
                     id="edit-description"
                     name="description"
@@ -360,16 +360,16 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                     rows={2}
                     disabled={isPending}
                     className="border-2 py-3 px-4 mt-1"
-                    style={{ borderColor: '#3d4a6b', backgroundColor: '#f2ecd9' }}
+                    style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="edit-typeId" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>Categorie *</Label>
+                  <Label htmlFor="edit-typeId" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>Categorie *</Label>
                   <Select name="activityType" defaultValue={editingActivity.typeId} required disabled={isPending}>
-                    <SelectTrigger className="border-2 py-3 px-4 mt-1" style={{ borderColor: '#3d4a6b', backgroundColor: '#f2ecd9' }}>
+                    <SelectTrigger className="border-2 py-3 px-4 mt-1" style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}>
                       <SelectValue placeholder="Selecteer een categorie" />
                     </SelectTrigger>
-                    <SelectContent style={{ backgroundColor: '#f2ecd9', borderColor: '#3d4a6b' }}>
+                    <SelectContent style={{ backgroundColor: '#f2ecd9', borderColor: '#282C44' }}>
                       {initialActivityTypes.map((type) => (
                         <SelectItem key={type.id} value={type.id}>
                           {type.name}
@@ -379,7 +379,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="edit-weight" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>Gewicht (0-100) *</Label>
+                  <Label htmlFor="edit-weight" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>Gewicht (0-100) *</Label>
                   <Input
                     id="edit-weight"
                     name="weight"
@@ -390,7 +390,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                     required
                     disabled={isPending}
                     className="border-2 py-3 px-4 mt-1"
-                    style={{ borderColor: '#3d4a6b', backgroundColor: '#f2ecd9' }}
+                    style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}
                   />
                 </div>
                 <div className="flex items-center gap-2 pt-2">
@@ -401,9 +401,9 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                     defaultChecked={editingActivity.isActive}
                     disabled={isPending}
                     className="w-4 h-4 border-2"
-                    style={{ borderColor: '#3d4a6b' }}
+                    style={{ borderColor: '#282C44' }}
                   />
-                  <Label htmlFor="edit-isActive" className="px-2 py-1 text-base font-medium" style={{ color: '#3d4a6b' }}>
+                  <Label htmlFor="edit-isActive" className="px-2 py-1 text-base font-medium" style={{ color: '#282C44' }}>
                     Activiteit is actief
                   </Label>
                 </div>
@@ -414,7 +414,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                     onClick={() => setIsEditDialogOpen(false)}
                     disabled={isPending}
                     className="flex-1 border-2 py-2 px-4"
-                    style={{ borderColor: '#3d4a6b', color: '#3d4a6b' }}
+                    style={{ borderColor: '#282C44', color: '#282C44' }}
                   >
                     Annuleren
                   </Button>
@@ -422,7 +422,7 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
                     type="submit"
                     disabled={isPending}
                     className="flex-1 font-semibold py-2 px-4 border-2 hover:shadow-md transition-all duration-200"
-                    style={{ backgroundColor: '#3d4a6b', color: '#d4c4a8', borderColor: '#3d4a6b' }}
+                    style={{ backgroundColor: '#6ECFF6', color: '#282C44', borderColor: '#6ECFF6' }}
                   >
                     {isPending ? 'Bezig...' : 'Opslaan'}
                   </Button>
