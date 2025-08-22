@@ -154,6 +154,8 @@ model ActivityLog {
 - Use TypeScript strictly
 - Follow Shadcn/ui patterns
 
+- Important: When you change the roulette page or its client component, increment the version number shown in the header of `src/app/roulette/roulette-client.tsx` (for example `(v1.6)`), and update this instructions file with the new version. This ensures the UI version and changelog stay in sync.
+
 ## Design System & Style Guide
 
 ### Color Palette
@@ -212,7 +214,7 @@ src/
 - [x] Shadcn/ui components
 - [x] Prisma + PostgreSQL schema
 - [ ] Server Actions implementation
-- [ ] Roulette component with animations
+- [ ] Roulette component with animations (v1.4)
 - [ ] CRUD pages with Server Actions
 - [ ] Database seeding
 - [ ] Vercel deployment

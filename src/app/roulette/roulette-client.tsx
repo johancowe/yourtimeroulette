@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Activity, ActivityType } from '@prisma/client'
-import { logActivity } from '@/lib/actions/roulette'
+import { logActivity, selectRandomActivity } from '@/lib/actions/roulette'
 import { ArrowLeft, Play, Clock, Star, Target } from 'lucide-react'
 import Link from 'next/link'
 
@@ -53,54 +53,11 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
   // Log the render order for debugging
   useEffect(() => {
     if (isMounted) {
-      console.log('Rendered wheel with activities (v1.2):', displayActivities.map(a => a.name));
+      // Version tracking for development
     }
   }, [displayActivities, isMounted]);
 
-  // Simplified spin preparation
-  const prepareSpin = (): {
-    activity: ActivityWithType
-    rotationDelta: number
-  } => {
-    // Step 1: Weighted selection from the STABLE `displayActivities` state.
-    // This ensures the selection logic and rendering logic use the same source.
-    const totalWeight = displayActivities.reduce((sum, a) => sum + a.weight, 0)
-    let random = Math.random() * totalWeight
-    let selectedActivity = displayActivities[0]
-    for (const activity of displayActivities) {
-      random -= activity.weight
-      if (random <= 0) {
-        selectedActivity = activity
-        break
-      }
-    }
-
-    // Step 2: Calculate rotation needed.
-    const segmentAngle = 360 / displayActivities.length
-    const selectedIndex = displayActivities.findIndex(a => a.id === selectedActivity.id)
-    
-    // The center of the selected slice when the wheel is at 0 rotation.
-    // Slices are drawn starting from -90 degrees (top).
-    const baseCenter = -90 + selectedIndex * segmentAngle + (segmentAngle / 2)
-    
-    // The angle needed to move the slice's center to the pointer (180°)
-    const targetAngle = 180
-    const rotationToGo = ((targetAngle - baseCenter) % 360 + 360) % 360
-
-    // Add full spins for visual effect
-    const spins = 4 + Math.floor(Math.random() * 3) // 4, 5, or 6 spins
-    const rotationDelta = (spins * 360) + rotationToGo
-
-    console.log('🎯 PREPARED SPIN (v1.1):')
-    console.log(`Selected: ${selectedActivity.name} (index: ${selectedIndex})`)
-    console.log(`Layout is fixed. Base Center: ${baseCenter.toFixed(2)}°`)
-    console.log(`Rotation to go: ${rotationToGo.toFixed(2)}°`)
-    console.log(`Total Rotation: ${rotationDelta.toFixed(2)}°`)
-
-    return { activity: selectedActivity, rotationDelta }
-  }
-
-  // Simplified spin execution
+  // Spin execution that uses server-selected activity as the single source of truth
   const spinRoulette = async () => {
     if (isSpinning) return
 
@@ -108,21 +65,42 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
     setSelectedActivity(null)
     setShowTimeLog(false)
 
-    const { activity, rotationDelta } = prepareSpin()
+    try {
+      // Ask server to pick and log a random activity; server returns the selected activity and created log
+      const result = await selectRandomActivity()
 
-    // 1. Snap wheel to 0 degrees without animation
-    flushSync(() => {
-      setAnimateWheel(false)
-      setWheelRotation(0)
-    })
+      // Result shape: { activity: ActivityWithType, log: { id, activity, selectedAt, ... } }
+      const serverActivity: ActivityWithType = result.activity
 
-    // 2. On the next frame, enable animation and apply the full rotation
-    requestAnimationFrame(() => {
-      setAnimateWheel(true)
-      setWheelRotation(rotationDelta)
-    })
+      // compute rotation for the selected activity index in our current displayActivities ordering
+      const segmentAngle = 360 / displayActivities.length
+      const selectedIndex = displayActivities.findIndex(a => a.id === serverActivity.id)
+      const baseCenter = -90 + selectedIndex * segmentAngle + (segmentAngle / 2)
+      
+      // Target angle is 90° (bottom pointer position)
+      const targetAngle = 90
+      const rotationToGo = ((targetAngle - baseCenter) % 360 + 360) % 360
+      const spins = 4 + Math.floor(Math.random() * 3)
+      const rotationDelta = (spins * 360) + rotationToGo
 
-    setPendingSelection({ activity })
+      // Snap wheel to 0 degrees without animation
+      flushSync(() => {
+        setAnimateWheel(false)
+        setWheelRotation(0)
+      })
+
+      // On next frame, animate to final rotation
+      requestAnimationFrame(() => {
+        setAnimateWheel(true)
+        setWheelRotation(rotationDelta)
+      })
+
+      // Save pending selection so transition end handler can reveal it
+      setPendingSelection({ activity: serverActivity })
+    } catch (error) {
+      console.error('Error selecting activity from server:', error)
+      setIsSpinning(false)
+    }
   }
 
   // Simplified transition end handler
@@ -208,7 +186,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
           <CardHeader style={{ backgroundColor: '#282C44', color: '#e8d8b9' }}>
             <CardTitle className="text-center text-2xl">
               <Target className="inline h-8 w-8 mr-3" />
-              Activiteiten Roulette <span className="text-xs opacity-70 font-normal">(v1.1)</span>
+              Activiteiten Roulette <span className="text-sm font-normal">(v1.7)</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
@@ -325,7 +303,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
                           </g>
                         )
                       })}
-                    </svg>
+                      </svg>
                   )}
                   
                   {/* Loading placeholder for SSR */}

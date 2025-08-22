@@ -40,14 +40,29 @@ export async function selectRandomActivity() {
     const selectedActivityId = weightedActivities[randomIndex]
 
     const selectedActivity = activities.find((a: ActivityWithType) => a.id === selectedActivityId)!    // Log the selection
-    await prisma.activityLog.create({
+    // Create activity log and include the activity/type so the client can update UI without an extra call
+    const activityLog = await prisma.activityLog.create({
       data: {
         activityId: selectedActivityId
+      },
+      include: {
+        activity: {
+          include: { type: true }
+        }
       }
     })
 
     revalidatePath('/roulette')
-    return selectedActivity
+    return {
+      activity: selectedActivity,
+      log: {
+        id: activityLog.id,
+        activity: activityLog.activity,
+        selectedAt: activityLog.selectedAt,
+        timeSpentMinutes: activityLog.timeSpentMinutes,
+        notes: activityLog.notes
+      }
+    }
   } catch (error) {
     console.error('Error selecting random activity:', error)
     throw new Error('Failed to select random activity')
