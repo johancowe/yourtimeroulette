@@ -225,7 +225,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
 
                   {/* Wheel */}
                   <div
-                    className={`w-96 h-96 rounded-full border-8 relative overflow-hidden ${animateWheel ? 'transition-transform duration-2000 ease-out' : 'transition-none'}`}
+                    className={`w-96 h-96 rounded-full border-8 relative overflow-hidden ${animateWheel ? 'transition-transform duration-[10000ms] ease-out' : 'transition-none'}`}
                     style={{
                       borderColor: '#282C44',
                       backgroundColor: '#f2ecd9',
