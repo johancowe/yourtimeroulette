@@ -190,11 +190,11 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
 
         {/* Roulette Wheel */}
         <div className="flex flex-col items-center space-y-8">
-          <Card className="w-full max-w-4xl shadow-lg border-2" style={{ backgroundColor: '#e8d8b9', borderColor: '#282C44' }}>
+          <Card className="w-full max-w-4xl lg:max-w-5xl xl:max-w-6xl shadow-lg border-2" style={{ backgroundColor: '#e8d8b9', borderColor: '#282C44' }}>
             <CardContent className="p-8">
               {/* Wheel Container */}
               <div className="relative flex justify-center mb-8">
-                <div className="relative w-96 h-96">
+                <div className="relative w-96 h-96 md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[36rem] xl:h-[36rem]">
                   {/* Central Pointer - Like Wheel of Fortune */}
                   <div
                     className="absolute top-1/2 left-1/2 transform -translate-x-1/2 z-40"
@@ -221,13 +221,13 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
 
                   {/* Fixed Shadow Background */}
                   <div
-                    className="absolute w-96 h-96 rounded-full shadow-2xl"
+                    className="absolute w-96 h-96 md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[36rem] xl:h-[36rem] rounded-full shadow-2xl"
                     style={{ backgroundColor: 'transparent' }}
                   ></div>
 
                   {/* Wheel */}
                   <div
-                    className={`w-96 h-96 rounded-full border-8 relative overflow-hidden ${animateWheel ? 'transition-transform duration-[10000ms] ease-out' : 'transition-none'}`}
+                    className={`w-96 h-96 md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[36rem] xl:h-[36rem] rounded-full border-8 relative overflow-hidden ${animateWheel ? 'transition-transform duration-[10000ms] ease-out' : 'transition-none'}`}
                     style={{
                       borderColor: '#282C44',
                       backgroundColor: '#f2ecd9',
