@@ -1,5 +1,7 @@
 'use client'
 
+// YourTimeRoulette - Roulette Client Component (v1.9)
+
 import { useState, useTransition, useEffect } from 'react'
 import { flushSync } from 'react-dom'
 import { Button } from '@/components/ui/button'
@@ -271,11 +273,18 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
                           // Colors alternating
                           const segmentColor = index % 2 === 0 ? '#e8d8b9' : '#f2ecd9'
 
-                          // Text position (midpoint of arc)
+                          // Text position - positioned closer to the edge for better readability
                           const midAngle = startAngle + segmentAngle / 2
-                          const textRadius = radius * 0.7
+                          const textRadius = radius * 0.75 // Position for text
                           const textX = centerX + textRadius * Math.cos((midAngle * Math.PI) / 180)
                           const textY = centerY + textRadius * Math.sin((midAngle * Math.PI) / 180)
+                          
+                          // Calculate rotation for text to be radial (along the spoke/rib direction)
+                          // All text should point outward from center in the same orientation
+                          let textRotation = midAngle
+                          
+                          // Keep all text in the same orientation - no flipping
+                          // This ensures all text reads in the same direction relative to their radial axis
 
                           return (
                             <g key={activity.id}>
@@ -292,8 +301,8 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
                                 dominantBaseline="middle"
                                 className="text-xs font-semibold pointer-events-none"
                                 fill="#282C44"
-                                transform={`rotate(${midAngle + 90} ${textX} ${textY})`}
-                                style={{ fontSize: activities.length > 8 ? '8px' : '10px' }}
+                                transform={`rotate(${textRotation} ${textX} ${textY})`}
+                                style={{ fontSize: activities.length > 8 ? '6px' : '8px' }}
                               >
                                 <tspan>
                                   {activity.name.length > 15 ? activity.name.substring(0, 12) + '...' : activity.name}
@@ -334,7 +343,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
                 <Button
                   onClick={spinRoulette}
                   disabled={isSpinning || isPending}
-                  className="text-xl px-8 py-4 font-bold border-2 hover:shadow-lg transition-all duration-200"
+                  className="text-xl px-8 py-4 font-bold border-2 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
                   style={{ backgroundColor: '#282C44', color: '#d4c4a8', borderColor: '#282C44' }}
                 >
                   {isSpinning ? (
