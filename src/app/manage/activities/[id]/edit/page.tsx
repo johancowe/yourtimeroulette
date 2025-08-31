@@ -45,7 +45,7 @@ export default async function EditActivityPage({ params }: EditActivityPageProps
   }
 
   return (
-    <div className="min-h-screen p-8" style={{ backgroundColor: '#d4c4a8', fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+    <div className="min-h-screen p-8" style={{ backgroundColor: '#3d4a6b', fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/manage/activities">
@@ -55,10 +55,10 @@ export default async function EditActivityPage({ params }: EditActivityPageProps
             </Button>
           </Link>
           <div>
-            <h1 className="text-4xl font-bold px-2" style={{ color: '#1c2340' }}>
+            <h1 className="text-4xl font-bold px-2" style={{ color: '#e8d8b9' }}>
               Activiteit Bewerken
             </h1>
-            <p className="text-lg px-3 py-2" style={{ color: '#1c2340' }}>
+            <p className="text-lg px-3 py-2" style={{ color: '#e8d8b9' }}>
               Bewerk de details van &ldquo;{activity.name}&rdquo;
             </p>
           </div>

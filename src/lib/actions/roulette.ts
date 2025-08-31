@@ -10,7 +10,6 @@ type ActivityWithType = Activity & {
 
 // Roulette Actions
 export async function selectRandomActivity() {
-
   try {
     // Get all active activities with their weights
     const activities: ActivityWithType[] = await prisma.activity.findMany({
@@ -39,29 +38,11 @@ export async function selectRandomActivity() {
     const randomIndex = Math.floor(Math.random() * weightedActivities.length)
     const selectedActivityId = weightedActivities[randomIndex]
 
-    const selectedActivity = activities.find((a: ActivityWithType) => a.id === selectedActivityId)!    // Log the selection
-    // Create activity log and include the activity/type so the client can update UI without an extra call
-    const activityLog = await prisma.activityLog.create({
-      data: {
-        activityId: selectedActivityId
-      },
-      include: {
-        activity: {
-          include: { type: true }
-        }
-      }
-    })
+    const selectedActivity = activities.find((a: ActivityWithType) => a.id === selectedActivityId)!
 
-    revalidatePath('/roulette')
+    // Don't log here - just return the selected activity
     return {
-      activity: selectedActivity,
-      log: {
-        id: activityLog.id,
-        activity: activityLog.activity,
-        selectedAt: activityLog.selectedAt,
-        timeSpentMinutes: activityLog.timeSpentMinutes,
-        notes: activityLog.notes
-      }
+      activity: selectedActivity
     }
   } catch (error) {
     console.error('Error selecting random activity:', error)
@@ -90,6 +71,7 @@ export async function logActivity(activityId: string) {
       activity: activityLog.activity,
       selectedAt: activityLog.selectedAt,
       timeSpentMinutes: activityLog.timeSpentMinutes,
+      satisfaction: activityLog.satisfaction,
       notes: activityLog.notes
     }
   } catch (error) {
@@ -124,5 +106,41 @@ export async function logActivityTime(formData: FormData) {
   } catch (error) {
     console.error('Error logging activity time:', error)
     throw new Error('Failed to log activity time')
+  }
+}
+
+export async function updateActivityLog(
+  logId: string, 
+  timeSpentMinutes: number | null, 
+  satisfaction: number | null
+) {
+  try {
+    const updatedLog = await prisma.activityLog.update({
+      where: { id: logId },
+      data: {
+        timeSpentMinutes,
+        satisfaction
+      },
+      include: {
+        activity: {
+          include: {
+            type: true
+          }
+        }
+      }
+    })
+
+    revalidatePath('/roulette')
+    return {
+      id: updatedLog.id,
+      activity: updatedLog.activity,
+      selectedAt: updatedLog.selectedAt,
+      timeSpentMinutes: updatedLog.timeSpentMinutes,
+      satisfaction: updatedLog.satisfaction,
+      notes: updatedLog.notes
+    }
+  } catch (error) {
+    console.error('Error updating activity log:', error)
+    throw new Error('Failed to update activity log')
   }
 }

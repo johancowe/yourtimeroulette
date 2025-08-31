@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "YourTimeRoulette - Laat het toeval bepalen wat je gaat doen!",
-  description: "Beheer je favoriete activiteiten en laat de roulette willekeurig kiezen wat je gaat doen. Met gewogen keuzes en tijd tracking.",
+  title: "YourTimeRoulette - Activity Management System",
+  description: "Beheer je favoriete activiteiten en laat de roulette willekeurig kiezen wat je gaat doen. Met gewogen keuzes en activiteiten log.",
 };
 
 export default function RootLayout({

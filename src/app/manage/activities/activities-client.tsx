@@ -92,11 +92,11 @@ export default function ActivitiesClient({ initialActivities, initialActivityTyp
   }
 
   return (
-    <div className="min-h-screen p-8" style={{ backgroundColor: '#d4c4a8', fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+    <div className="min-h-screen p-8" style={{ backgroundColor: '#3d4a6b', fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-4xl font-bold mb-4 px-2" style={{ color: '#282C44' }}>
+            <h1 className="text-4xl font-bold mb-4 px-2" style={{ color: '#e8d8b9' }}>
               Activiteiten Beheer
             </h1>
           </div>

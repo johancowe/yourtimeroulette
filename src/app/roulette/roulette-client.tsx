@@ -1,6 +1,6 @@
 'use client'
 
-// YourTimeRoulette - Roulette Client Component (v1.9)
+// YourTimeRoulette - Roulette Client Component (v2.0)
 
 import { useState, useTransition, useEffect } from 'react'
 import { flushSync } from 'react-dom'
@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Activity, ActivityType } from '@prisma/client'
-import { logActivity, selectRandomActivity } from '@/lib/actions/roulette'
+import { logActivity, selectRandomActivity, updateActivityLog } from '@/lib/actions/roulette'
 import { ArrowLeft, Play, Star, Scale } from 'lucide-react'
 import Link from 'next/link'
 
@@ -21,21 +22,13 @@ interface RouletteClientProps {
   activities: ActivityWithType[]
 }
 
-interface ActivityLog {
-  id: string
-  activity: ActivityWithType
-  selectedAt: Date
-  timeSpentMinutes: number | null
-  notes: string | null
-}
-
 export default function RouletteClient({ activities }: RouletteClientProps) {
   const [isSpinning, setIsSpinning] = useState(false)
   const [selectedActivity, setSelectedActivity] = useState<ActivityWithType | null>(null)
   const [showTimeLog, setShowTimeLog] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [timeSpent, setTimeSpent] = useState('')
   const [satisfaction, setSatisfaction] = useState(0)
-  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([])
   const [isPending, startTransition] = useTransition()
   const [wheelRotation, setWheelRotation] = useState(0)
   const [isMounted, setIsMounted] = useState(false)
@@ -60,17 +53,31 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
 
   // Spin execution that uses server-selected activity as the single source of truth
   const spinRoulette = async () => {
-    if (isSpinning) return
+    console.log('🎰 spinRoulette called', { 
+      isSpinning, 
+      showModal, 
+      hasSelectedActivity: !!selectedActivity, 
+      isPending 
+    })
+    
+    // Prevent spinning if already spinning, pending, or modal is shown
+    if (isSpinning || showModal || selectedActivity || isPending) {
+      console.log('🚫 Spin blocked - already in progress')
+      return
+    }
 
+    console.log('✅ Starting new spin')
     setIsSpinning(true)
     setSelectedActivity(null)
     setShowTimeLog(false)
+    setShowModal(false)
+    setPendingSelection(null)
 
     try {
-      // Ask server to pick and log a random activity; server returns the selected activity and created log
+      // Ask server to pick a random activity (but don't log it yet)
       const result = await selectRandomActivity()
 
-      // Result shape: { activity: ActivityWithType, log: { id, activity, selectedAt, ... } }
+      // Result shape: { activity: ActivityWithType }
       const serverActivity: ActivityWithType = result.activity
 
       // compute rotation for the selected activity index in our current displayActivities ordering
@@ -104,70 +111,86 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
     }
   }
 
-  // Simplified transition end handler
-  const handleWheelTransitionEnd = () => {
-    if (!isSpinning) return
+  // Improved transition end handler with event filtering
+  const handleWheelTransitionEnd = (event: React.TransitionEvent) => {
+    // Only handle transition end for the wheel element itself, not child elements
+    if (event.target !== event.currentTarget) return
+    
+    // Only handle if we're actually spinning and have a pending selection
+    if (!isSpinning || !pendingSelection) return
 
-    // Snap to the final angle modulo 360 to prevent accumulation issues
-    const snapped = ((wheelRotation % 360) + 360) % 360
-    setAnimateWheel(false)
-    setWheelRotation(snapped)
+    // Prevent multiple transition end events
+    if (selectedActivity) return
 
-    // Re-enable animation on the next frame for future spins
-    requestAnimationFrame(() => setAnimateWheel(true))
+    console.log('🎯 Wheel transition ended, showing modal')
 
-    if (pendingSelection) {
-      const activity = pendingSelection.activity
-      setSelectedActivity(activity)
-      setPendingSelection(null)
-      setIsSpinning(false)
-      setShowTimeLog(true)
+    const activity = pendingSelection.activity
+    setSelectedActivity(activity)
+    setPendingSelection(null)
+    setIsSpinning(false)
 
-      // Log to DB
-      startTransition(async () => {
-        try {
-          const result = await logActivity(activity.id)
-          setActivityLogs(prev => [result, ...prev])
-        } catch (error) {
-          console.error('Error logging activity:', error)
-        }
-      })
-    }
+    // Show modal immediately (no setTimeout to avoid race conditions)
+    setShowModal(true)
+    setShowTimeLog(true)
+
+    // Don't log to DB here - wait for user confirmation
   }
 
   const handleTimeLog = async (formData: FormData) => {
     if (!selectedActivity) return
 
     const timeSpentValue = formData.get('timeSpent') as string
+    const timeSpent = timeSpentValue ? parseInt(timeSpentValue) : null
+    const satisfactionValue = satisfaction || null
 
     startTransition(async () => {
       try {
-        // Update het laatste log record
-        if (activityLogs.length > 0) {
-          const updatedLog = {
-            ...activityLogs[0],
-            timeSpentMinutes: timeSpentValue ? parseInt(timeSpentValue) : null,
-            satisfaction: satisfaction || null
-          }
-          setActivityLogs(prev => [updatedLog, ...prev.slice(1)])
+        // First log the activity to create a new record
+        const result = await logActivity(selectedActivity.id)
+        
+        // Then update it with time and satisfaction if provided
+        if (timeSpent || satisfactionValue) {
+          await updateActivityLog(result.id, timeSpent, satisfactionValue)
         }
 
+        console.log('✅ Activity logged successfully')
+
+        // Reset all state completely
         setTimeSpent('')
         setSatisfaction(0)
         setShowTimeLog(false)
+        setShowModal(false)
+        setSelectedActivity(null)
+        setPendingSelection(null)
+        setIsSpinning(false)
       } catch (error) {
-        console.error('Error updating time log:', error)
+        console.error('Error logging activity:', error)
       }
     })
   }
 
+  const handleSkip = () => {
+    console.log('🚫 User skipped activity')
+    
+    // Reset all modal and selection state completely
+    setShowModal(false)
+    setShowTimeLog(false)
+    setSelectedActivity(null)
+    setTimeSpent('')
+    setSatisfaction(0)
+    setPendingSelection(null)
+    
+    // Ensure spinning state is properly reset
+    setIsSpinning(false)
+  }
+
   return (
-    <div className="min-h-screen p-8" style={{ backgroundColor: '#d4c4a8', fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+    <div className="min-h-screen p-8" style={{ backgroundColor: '#3d4a6b', fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
       <div className="max-w-6xl mx-auto">
         {/* Header Section - Simple layout like manage pages */}
         <div className="flex justify-between items-center mb-2">
           <div>
-            <h1 className="text-3xl font-bold px-2 py-1" style={{ color: '#282C44' }}>
+            <h1 className="text-3xl font-bold px-2 py-1" style={{ color: '#e8d8b9' }}>
               Activiteiten Roulette
             </h1>
           </div>
@@ -184,7 +207,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
         </div>
 
         {/* Stats */}
-        <div className="text-sm mb-8 px-2" style={{ color: '#282C44' }}>
+        <div className="text-sm mb-8 px-2" style={{ color: '#e8d8b9' }}>
           <strong>{activities.length}</strong> actieve activiteiten beschikbaar voor de roulette
         </div>
 
@@ -278,11 +301,11 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
                           const textRadius = radius * 0.75 // Position for text
                           const textX = centerX + textRadius * Math.cos((midAngle * Math.PI) / 180)
                           const textY = centerY + textRadius * Math.sin((midAngle * Math.PI) / 180)
-                          
+
                           // Calculate rotation for text to be radial (along the spoke/rib direction)
                           // All text should point outward from center in the same orientation
-                          let textRotation = midAngle
-                          
+                          const textRotation = midAngle
+
                           // Keep all text in the same orientation - no flipping
                           // This ensures all text reads in the same direction relative to their radial axis
 
@@ -342,7 +365,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
               <div className="text-center">
                 <Button
                   onClick={spinRoulette}
-                  disabled={isSpinning || isPending}
+                  disabled={isSpinning || isPending || showModal || !!selectedActivity}
                   className="text-xl px-8 py-4 font-bold border-2 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
                   style={{ backgroundColor: '#282C44', color: '#d4c4a8', borderColor: '#282C44' }}
                 >
@@ -350,6 +373,11 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
                     <div className="flex items-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-current mr-3"></div>
                       Draait...
+                    </div>
+                  ) : showModal || selectedActivity ? (
+                    <div className="flex items-center">
+                      <Play className="h-6 w-6 mr-3" />
+                      Kies eerst Doe ik of Skip
                     </div>
                   ) : (
                     <div className="flex items-center">
@@ -361,6 +389,120 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
               </div>
             </CardContent>
           </Card>
+
+          {/* Modal for Selected Activity */}
+          <Dialog open={showModal}>
+            <DialogContent className="max-w-md mx-auto" style={{ backgroundColor: '#e8d8b9', borderColor: '#282C44' }}>
+              <DialogHeader style={{ backgroundColor: '#6ECFF6', color: '#282C44' }} className="text-center">
+                <DialogTitle className="text-xl flex items-center justify-center">
+                  <Star className="h-6 w-6 mr-3" />
+                  Jouw Gekozen Activiteit!
+                </DialogTitle>
+              </DialogHeader>
+
+              {selectedActivity && (
+                <div className="p-6">
+                  <div className="text-center space-y-4 mb-4">
+                    <h3 className="text-2xl font-bold" style={{ color: '#282C44' }}>
+                      {selectedActivity.name}
+                    </h3>
+                    {selectedActivity.description && (
+                      <p className="text-lg" style={{ color: '#282C44' }}>
+                        {selectedActivity.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Category and Weight */}
+                  <div className="flex justify-between items-end mb-4">
+                    <Badge
+                      variant="outline"
+                      className="text-sm font-medium px-3 py-1"
+                      style={{ borderColor: '#282C44', color: '#282C44', backgroundColor: '#f2ecd9' }}
+                    >
+                      {selectedActivity.type.name}
+                    </Badge>
+                    <div className="flex flex-col items-center" style={{ color: '#282C44' }}>
+                      <span className="text-sm font-bold">{selectedActivity.weight}</span>
+                      <Scale className="h-4 w-4" />
+                    </div>
+                  </div>
+
+                  {/* Time Logging Section */}
+                  {showTimeLog && (
+                    <div className="border-t-2 pt-4" style={{ borderColor: '#282C44' }}>
+                      <form action={handleTimeLog} className="space-y-4">
+                        {/* Time Input */}
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="timeSpent" className="text-sm font-medium" style={{ color: '#282C44' }}>
+                            Tijd (min):
+                          </Label>
+                          <input
+                            type="number"
+                            id="timeSpent"
+                            name="timeSpent"
+                            value={timeSpent}
+                            onChange={(e) => setTimeSpent(e.target.value)}
+                            placeholder="30"
+                            min="1"
+                            className="w-20 border-2 py-1 px-2 rounded"
+                            style={{ borderColor: '#282C44', backgroundColor: '#f2ecd9' }}
+                          />
+                        </div>
+
+                        {/* Satisfaction Rating */}
+                        <div className="flex items-center gap-2">
+                          <Label className="text-sm font-medium" style={{ color: '#282C44' }}>
+                            Rating:
+                          </Label>
+                          <div className="flex gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                type="button"
+                                onClick={() => setSatisfaction(star)}
+                                className="text-2xl transition-colors duration-200 hover:scale-110"
+                                style={{
+                                  color: star <= satisfaction ? '#282C44' : '#f2ecd9',
+                                  textShadow: star <= satisfaction
+                                    ? '0 0 3px rgba(40, 44, 68, 0.6)'
+                                    : '-1px -1px 0 #282C44, 1px -1px 0 #282C44, -1px 1px 0 #282C44, 1px 1px 0 #282C44'
+                                }}
+                              >
+                                ★
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-2 justify-end">
+                          <Button
+                            type="button"
+                            onClick={handleSkip}
+                            size="sm"
+                            className="border-2 hover:shadow-md transition-all duration-200"
+                            style={{ backgroundColor: '#dc2626', color: 'white', borderColor: '#dc2626' }}
+                          >
+                            Skip
+                          </Button>
+                          <Button
+                            type="submit"
+                            disabled={isPending}
+                            size="sm"
+                            className="font-semibold border-2 hover:shadow-md transition-all duration-200"
+                            style={{ backgroundColor: '#16a34a', color: 'white', borderColor: '#16a34a' }}
+                          >
+                            {isPending ? 'Bezig...' : 'Doe ik!'}
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
 
           {/* Selected Activity with Time Logging */}
           {selectedActivity && (

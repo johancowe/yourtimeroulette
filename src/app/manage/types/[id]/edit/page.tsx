@@ -33,7 +33,7 @@ export default async function EditActivityTypePage({ params }: EditActivityTypeP
   }
 
   return (
-    <div className="min-h-screen p-8" style={{ backgroundColor: '#d4c4a8' }}>
+    <div className="min-h-screen p-8" style={{ backgroundColor: '#3d4a6b' }}>
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/manage/types">
@@ -43,10 +43,10 @@ export default async function EditActivityTypePage({ params }: EditActivityTypeP
             </Button>
           </Link>
           <div>
-            <h1 className="text-4xl font-bold" style={{ color: '#1c2340' }}>
+            <h1 className="text-4xl font-bold" style={{ color: '#e8d8b9' }}>
               📁 Categorie Bewerken
             </h1>
-            <p className="text-lg" style={{ color: '#1c2340' }}>
+            <p className="text-lg" style={{ color: '#e8d8b9' }}>
               Bewerk de details van &ldquo;{activityType.name}&rdquo;
             </p>
           </div>
