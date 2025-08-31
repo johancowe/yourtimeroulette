@@ -35,7 +35,7 @@ export default async function RoulettePage() {
     )
   } catch (error) {
     console.error('Database connection error:', error)
-    
+
     // Fallback UI when database is not available
     return (
       <div className="min-h-screen p-4 flex items-center justify-center" style={{ backgroundColor: '#3d4a6b' }}>

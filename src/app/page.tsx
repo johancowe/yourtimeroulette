@@ -58,10 +58,10 @@ export default function Home() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <Button asChild className="w-full font-semibold py-4 px-4 border-3 text-xl hover:shadow-xl hover:scale-105 transition-all duration-300 transform min-h-[78px] flex items-center justify-center" style={{ 
-                background: 'linear-gradient(135deg, #14b8a6 0%, #0f766e 50%, #134e4a 100%)', 
-                color: '#e8d8b9', 
-                borderColor: '#14b8a6', 
+              <Button asChild className="w-full font-semibold py-4 px-4 border-3 text-xl hover:shadow-xl hover:scale-105 transition-all duration-300 transform min-h-[78px] flex items-center justify-center" style={{
+                background: 'linear-gradient(135deg, #14b8a6 0%, #0f766e 50%, #134e4a 100%)',
+                color: '#e8d8b9',
+                borderColor: '#14b8a6',
                 boxShadow: '0 8px 20px rgba(20, 184, 166, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2)',
                 border: '2px solid #14b8a6'
               }}>

@@ -53,13 +53,13 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
 
   // Spin execution that uses server-selected activity as the single source of truth
   const spinRoulette = async () => {
-    console.log('🎰 spinRoulette called', { 
-      isSpinning, 
-      showModal, 
-      hasSelectedActivity: !!selectedActivity, 
-      isPending 
+    console.log('🎰 spinRoulette called', {
+      isSpinning,
+      showModal,
+      hasSelectedActivity: !!selectedActivity,
+      isPending
     })
-    
+
     // Prevent spinning if already spinning, pending, or modal is shown
     if (isSpinning || showModal || selectedActivity || isPending) {
       console.log('🚫 Spin blocked - already in progress')
@@ -115,7 +115,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
   const handleWheelTransitionEnd = (event: React.TransitionEvent) => {
     // Only handle transition end for the wheel element itself, not child elements
     if (event.target !== event.currentTarget) return
-    
+
     // Only handle if we're actually spinning and have a pending selection
     if (!isSpinning || !pendingSelection) return
 
@@ -147,7 +147,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
       try {
         // First log the activity to create a new record
         const result = await logActivity(selectedActivity.id)
-        
+
         // Then update it with time and satisfaction if provided
         if (timeSpent || satisfactionValue) {
           await updateActivityLog(result.id, timeSpent, satisfactionValue)
@@ -171,7 +171,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
 
   const handleSkip = () => {
     console.log('🚫 User skipped activity')
-    
+
     // Reset all modal and selection state completely
     setShowModal(false)
     setShowTimeLog(false)
@@ -179,7 +179,7 @@ export default function RouletteClient({ activities }: RouletteClientProps) {
     setTimeSpent('')
     setSatisfaction(0)
     setPendingSelection(null)
-    
+
     // Ensure spinning state is properly reset
     setIsSpinning(false)
   }

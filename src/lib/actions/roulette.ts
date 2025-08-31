@@ -110,8 +110,8 @@ export async function logActivityTime(formData: FormData) {
 }
 
 export async function updateActivityLog(
-  logId: string, 
-  timeSpentMinutes: number | null, 
+  logId: string,
+  timeSpentMinutes: number | null,
   satisfaction: number | null
 ) {
   try {
