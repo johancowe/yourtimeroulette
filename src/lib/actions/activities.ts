@@ -3,9 +3,12 @@
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { getCurrentUser } from '@/lib/server-auth'
 
 // Activity Actions
 export async function createActivity(formData: FormData) {
+  const user = await getCurrentUser()
+
   const name = formData.get('name') as string
   const description = formData.get('description') as string
   const typeId = formData.get('activityType') as string
@@ -21,11 +24,24 @@ export async function createActivity(formData: FormData) {
   }
 
   try {
+    // Verify that the activity type belongs to the current user
+    const activityType = await prisma.activityType.findFirst({
+      where: {
+        id: typeId,
+        userId: user.id
+      }
+    })
+
+    if (!activityType) {
+      throw new Error('Invalid activity type')
+    }
+
     await prisma.activity.create({
       data: {
         name: name.trim(),
         description: description?.trim() || null,
         typeId,
+        userId: user.id,
         weight,
         isActive
       }
@@ -41,6 +57,8 @@ export async function createActivity(formData: FormData) {
 }
 
 export async function updateActivity(formData: FormData) {
+  const user = await getCurrentUser()
+
   const id = formData.get('id') as string
   const name = formData.get('name') as string
   const description = formData.get('description') as string
@@ -57,6 +75,30 @@ export async function updateActivity(formData: FormData) {
   }
 
   try {
+    // Verify that the activity belongs to the current user
+    const activity = await prisma.activity.findFirst({
+      where: {
+        id,
+        userId: user.id
+      }
+    })
+
+    if (!activity) {
+      throw new Error('Activity not found')
+    }
+
+    // Verify that the activity type belongs to the current user
+    const activityType = await prisma.activityType.findFirst({
+      where: {
+        id: typeId,
+        userId: user.id
+      }
+    })
+
+    if (!activityType) {
+      throw new Error('Invalid activity type')
+    }
+
     await prisma.activity.update({
       where: { id },
       data: {

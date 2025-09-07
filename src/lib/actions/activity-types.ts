@@ -3,9 +3,12 @@
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { getCurrentUser } from '@/lib/server-auth'
 
 // Activity Type Actions
 export async function createActivityType(formData: FormData) {
+  const user = await getCurrentUser()
+
   const name = formData.get('name') as string
   const description = formData.get('description') as string
 
@@ -17,7 +20,8 @@ export async function createActivityType(formData: FormData) {
     await prisma.activityType.create({
       data: {
         name: name.trim(),
-        description: description?.trim() || null
+        description: description?.trim() || null,
+        userId: user.id
       }
     })
 
@@ -31,6 +35,8 @@ export async function createActivityType(formData: FormData) {
 }
 
 export async function updateActivityType(formData: FormData) {
+  const user = await getCurrentUser()
+
   const id = formData.get('id') as string
   const name = formData.get('name') as string
   const description = formData.get('description') as string
@@ -40,6 +46,18 @@ export async function updateActivityType(formData: FormData) {
   }
 
   try {
+    // Verify that the activity type belongs to the current user
+    const activityType = await prisma.activityType.findFirst({
+      where: {
+        id,
+        userId: user.id
+      }
+    })
+
+    if (!activityType) {
+      throw new Error('Activity type not found')
+    }
+
     await prisma.activityType.update({
       where: { id },
       data: {
@@ -56,6 +74,8 @@ export async function updateActivityType(formData: FormData) {
 }
 
 export async function deleteActivityType(formData: FormData) {
+  const user = await getCurrentUser()
+
   const id = formData.get('id') as string
 
   if (!id) {
@@ -63,6 +83,18 @@ export async function deleteActivityType(formData: FormData) {
   }
 
   try {
+    // Verify that the activity type belongs to the current user
+    const activityType = await prisma.activityType.findFirst({
+      where: {
+        id,
+        userId: user.id
+      }
+    })
+
+    if (!activityType) {
+      throw new Error('Activity type not found')
+    }
+
     await prisma.activityType.delete({
       where: { id }
     })
